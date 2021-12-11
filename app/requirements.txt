@@ -1,8 +1,0 @@
-Flask
-Flask-MySQL
-PyMySQL
-datetime 
-uuid
-Flask-SQLAlchemy
-PyJWT
-cryptography

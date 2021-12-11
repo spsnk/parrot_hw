@@ -1,39 +1,36 @@
 version: "3"
 services:
-  app:
+  apiv1:
     build:
-      context: ./app
+      context: ./apiv1
       dockerfile: Dockerfile
-    command:
-      [
-        "./wait-for-it.sh",
-        "dbpg:3456",
-        "--",
-        "python",
-        "app.py"
-      ]
+    env_file:
+      - .dev.env
+    command: [ "python", "manage.py", "run", "-h", "0.0.0.0" ]
     depends_on:
-      - dbpg
+      - db
     volumes:
-      - "./app/.:/app"
+      - "./apiv1/.:/app"
     ports:
-      - "80:5000"
+      - "5000:5000"
 
-  # db:
-  #   image: mysql:8.0.21
-  #   ports:
-  #     - "33060:3306"
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: WG?E){C3>Qnvcwe+
-  #   volumes:
-  #     - ./db:/docker-entrypoint-initdb.d/:ro
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - apiv1
 
-  dbpg:
+  db:
     build:
       context: ./db
       dockerfile: Dockerfile
+    env_file:
+      - .dev.env
     ports:
-      - "34560:3456"
+      - "5432:5432"
     volumes:
       - database-data:/var/lib/postgresql/data/
 

@@ -1,0 +1,9 @@
+Flask
+Flask-SQLAlchemy
+flask-restful
+psycopg2-binary
+datetime 
+uuid
+PyJWT
+gunicorn
+cryptography
