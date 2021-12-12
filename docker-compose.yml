@@ -22,6 +22,8 @@ services:
       - "80:80"
     depends_on:
       - apiv1
+    volumes:
+      - "./web/html/.:/www"
 
   db:
     build:
