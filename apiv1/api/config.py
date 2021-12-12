@@ -10,3 +10,4 @@ class Config(object):
     DB_DB = os.getenv("POSTGRES_DB")
     SQLALCHEMY_DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASS}@db:5432/{DB_DB}" if DB_USER and DB_PASS and DB_DB else "sqlite://"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = os.getenv("SECRET_KEY")

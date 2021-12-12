@@ -40,7 +40,6 @@ class ProductsSales(Resource):
         errors = self.schema.validate(filters)
         if errors:
             abort(400, {"errors": errors})
-        print(filters)
         data = {
             "products": [
                 {
