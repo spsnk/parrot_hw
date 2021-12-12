@@ -1,6 +1,7 @@
 Flask
 Flask-SQLAlchemy
 flask-restful
+marshmallow
 psycopg2-binary
 datetime 
 uuid

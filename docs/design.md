@@ -1,7 +1,7 @@
 
 POST    /users
-GET     /users/credentials
-POST    /users/orders
+GET     /users/{id}/credentials
+POST    /users/{id}/orders
 GET     /products/sales
 
 Tables:
