@@ -17,8 +17,8 @@ order
     order_id -> PK FK
     product_id -> PK FK
     quantity
-    unitary_price
-    datetime
+    date_created
 products
     id -> PK
     name
+    unitary_price

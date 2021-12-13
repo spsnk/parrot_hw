@@ -1,20 +1,18 @@
-from api.models.shared import db
+from api.models.shared import ModelToDict, db
+
+from sqlalchemy import Column
+from sqlalchemy.types import String
 
 
-class Users(db.Model):
-    email = db.Column(db.String, primary_key=True)
-    name = db.Column(db.String)
+class Users(db.Model, ModelToDict):
+    email: str = Column(String, primary_key=True)
+    name: str = Column(String)
 
     def create(self):
+        self.email = self.email.strip().lower()
         db.session.add(self)
         db.session.commit()
-        return self.get_dict()
-
-    def get_dict(self):
-        return {
-            "email": self.email,
-            "name": self.name
-        }
+        return self
 
     def __repr__(self):
         return f'{self.name} <{self.email}>'

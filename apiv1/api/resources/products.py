@@ -1,8 +1,11 @@
 from flask import abort, request
 from flask_restful import Resource
 from marshmallow import Schema, fields, validates_schema, ValidationError
+from sqlalchemy.exc import IntegrityError
 
 from api.schemas import ProductSchema
+from api.models import ProductsModel
+from api.common.util import JsonEncoder
 
 
 class Products(Resource):
@@ -14,9 +17,13 @@ class Products(Resource):
         errors = self.schema.validate(data)
         if errors:
             abort(400, {"errors": errors})
-        # TODO:
-        # - database functions
-        return data, 201
+        try:
+            new_product = ProductsModel(**data).create()
+        except IntegrityError:
+            abort(409, {"errors": f"Product <{data['name']}> already exists."})
+        except Exception:
+            abort(500, {"errors": "Server error."})
+        return new_product.get_dict(), 201
 
 
 class ProductsSales(Resource):

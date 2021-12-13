@@ -2,7 +2,7 @@ from flask import abort, request, jsonify
 from flask_restful import Resource
 from marshmallow import Schema, fields
 from api.schemas import UserSchema, ProductSchema
-from api.models.user import Users as UsersModel
+from api.models import UsersModel
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
 from api.models.shared import db
@@ -19,10 +19,7 @@ class Users(Resource):
         if errors:
             abort(400, {"errors": errors})
         try:
-            new_user = UsersModel(
-                email=func.lower(data["email"]), name=data["name"])
-            db.session.add(new_user)
-            db.session.commit()
+            new_user = UsersModel(**data).create()
         except IntegrityError:
             abort(409, {"errors": f"Email <{data['email']}> already in use."})
         except Exception:

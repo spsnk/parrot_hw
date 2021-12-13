@@ -3,12 +3,12 @@ from marshmallow import Schema, fields, validate
 
 class ProductSchema(Schema):
     name = fields.Str(required=True)
-    quantity = fields.Int(
-        strict=True,
-        required=True,
-        validate=validate.Range(
-            min=1, error="Quantity must be greater than 0.")
-    )
+    # quantity = fields.Int(
+    #     strict=True,
+    #     required=True,
+    #     validate=validate.Range(
+    #         min=1, error="Quantity must be greater than 0.")
+    # )
     unitary_price = fields.Number(
         required=True,
         validate=validate.Range(
