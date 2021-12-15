@@ -9,7 +9,6 @@ from sqlalchemy.types import Numeric, String
 class Products(db.Model, ModelToDict):
     id: str = Column(String, primary_key=True, default=func.gen_random_uuid())
     name: str = Column(String, unique=True, index=True)
-    unitary_price: decimal.Decimal = Column(Numeric(10, 2, asdecimal=True))
 
     def create(self):
         self.name = self.name.strip().lower()
@@ -18,4 +17,4 @@ class Products(db.Model, ModelToDict):
         return self
 
     def __repr__(self):
-        return f'{self.name}: ${self.unitary_price}'
+        return f'{self.id} [{self.name}]'

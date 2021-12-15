@@ -28,7 +28,7 @@ class Orders(db.Model, ModelToDict):
         return self
 
     def __repr__(self):
-        return f'{self.user_email} [{self.date_created}]: ${self.total.__float__()}'
+        return f'<{self.id}>{self.user_email} [{self.date_created}]: ${self.total.__float__()}'
 
 
 class OrderContents(db.Model, ModelToDict):
@@ -37,10 +37,12 @@ class OrderContents(db.Model, ModelToDict):
         column=Orders.id), primary_key=True)
     product_id: str = Column(String, ForeignKey(
         column=Products.id), primary_key=True)
+    unitary_price: decimal.Decimal = Column(
+        Numeric(10, 2, asdecimal=True), index=True)
     quantity: int = Column(Integer)
 
     def __repr__(self):
-        return f'Order<{self.order_id}> Product[{self.product_id}]: Quantity:{self.quantity}'
+        return f'Order <{self.order_id}> {Products.query.get(self.product_id).name} (${self.unitary_price.__float__()}) x {self.quantity}'
 
 # class Reports(declarative_base(), ModelToDict):
 #     __table__ = join(OrderContents, Orders, Products)

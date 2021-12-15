@@ -1,11 +1,14 @@
+from datetime import datetime
 from flask import abort, request
 from flask_restful import Resource
+from flask_sqlalchemy import BaseQuery
 from marshmallow import Schema, fields, validates_schema, ValidationError
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import func, desc
 
 from api.schemas import ProductSchema
-from api.models import ProductsModel
-from api.common.util import JsonEncoder
+from api.models import ProductsModel, OrderContentsModel, OrdersModel
+from api.models.shared import db
 
 
 class Products(Resource):
@@ -47,13 +50,41 @@ class ProductsSales(Resource):
         errors = self.schema.validate(filters)
         if errors:
             abort(400, {"errors": errors})
-        data = {
-            "products": [
-                {
-                    "name": "coke",
-                    "total_quantity": 53,
-                    "total_earnings": 1258.36
-                }
-            ]
+        if filters.get("end") is None:
+            filters["end"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # TODO
+        # -- remove database logic from here
+        query: BaseQuery = (db.session.query(
+            ProductsModel.name,
+            func.sum(OrderContentsModel.quantity).label("units"),
+            func.sum(
+                OrderContentsModel.unitary_price *
+                OrderContentsModel.quantity
+            ).label("revenue")
+        ).join(ProductsModel)
+            .join(OrdersModel)
+            .group_by(ProductsModel.name)
+            .order_by(ProductsModel.name, desc("revenue"))
+        )
+        if filters.get("start") and filters.get("end"):
+            query = query.filter(
+                OrdersModel.date_created.between(
+                    filters["start"], filters["end"]
+                )
+            )
+        elif filters.get("end"):
+            query = query.filter(
+                OrdersModel.date_created < filters["end"]
+            )
+        result_set = query.all()
+        results = {
+            "products": []
         }
-        return data, 200
+        for row in result_set:
+            results["products"].append({
+                "name": row[0],
+                "units": row[1],
+                "revenue": float(row[2])
+            })
+
+        return results, 200

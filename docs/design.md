@@ -8,17 +8,16 @@ Tables:
 users
     email -> PK
     name
-orders
+order
     id -> PK
     user_email -> FK
     total
-    timestamp
-order
+    date_created
+ordercontents
     order_id -> PK FK
     product_id -> PK FK
     quantity
-    date_created
+    unitary_price
 products
     id -> PK
     name
-    unitary_price

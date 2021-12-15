@@ -9,9 +9,7 @@ from api.resources import UserOrders
 from api.resources import Users
 from api.resources import User
 from api.models.shared import db
-from api.common.util import JsonEncoder
 
-Flask.json_encoder = JsonEncoder
 app = Flask(__name__)
 app.config.from_object("api.config.Config")
 

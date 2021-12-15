@@ -1,12 +1,16 @@
+import datetime
+import logging
+import os
 from functools import wraps
-from flask_restful import request
-from flask import jsonify, abort
+
 import jwt
 from api.config import Config
 from api.models.shared import db
 from api.models.user import Users as UsersModel
-import datetime
-import os
+from flask import abort
+from flask_restful import request
+
+logger = logging.getLogger("auth")
 
 
 def auth_required(f):
@@ -29,6 +33,7 @@ def auth_required(f):
             if authorized_user != requested_user:
                 abort(401)
         except Exception as e:
+            logger.error(e)
             abort(401)
         return f(*args, **kwargs)
     return decorator
