@@ -1,14 +1,14 @@
 from datetime import datetime
+
+from api.models import OrderContentsModel, OrdersModel, ProductsModel
+from api.models.shared import db
+from api.schemas import ProductSchema
 from flask import abort, request
 from flask_restful import Resource
 from flask_sqlalchemy import BaseQuery
-from marshmallow import Schema, fields, validates_schema, ValidationError
+from marshmallow import Schema, ValidationError, fields, validates_schema
+from sqlalchemy import desc, func
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import func, desc
-
-from api.schemas import ProductSchema
-from api.models import ProductsModel, OrderContentsModel, OrdersModel
-from api.models.shared import db
 
 
 class Products(Resource):
@@ -50,18 +50,19 @@ class ProductsSales(Resource):
         errors = self.schema.validate(filters)
         if errors:
             abort(400, {"errors": errors})
-        if filters.get("end") is None:
+        if filters.get("end") is None and filters.get("start"):
             filters["end"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         # TODO
         # -- remove database logic from here
-        query: BaseQuery = (db.session.query(
-            ProductsModel.name,
-            func.sum(OrderContentsModel.quantity).label("units"),
-            func.sum(
-                OrderContentsModel.unitary_price *
-                OrderContentsModel.quantity
-            ).label("revenue")
-        ).join(ProductsModel)
+        query: BaseQuery = (
+            db.session.query(
+                ProductsModel.name,
+                func.sum(OrderContentsModel.quantity).label("units"),
+                func.sum(
+                    OrderContentsModel.unitary_price *
+                    OrderContentsModel.quantity
+                ).label("revenue")
+            ).join(ProductsModel)
             .join(OrdersModel)
             .group_by(ProductsModel.name)
             .order_by(desc("units"))
@@ -77,14 +78,13 @@ class ProductsSales(Resource):
                 OrdersModel.date_created < filters["end"]
             )
         result_set = query.all()
+        product_list: list = list(map(lambda p: {
+            "name": p[0],
+            "units": p[1],
+            "revenue": float(p[2])
+        }, result_set))
         results = {
-            "products": []
+            "range": filters if filters else "all",
+            "products": product_list
         }
-        for row in result_set:
-            results["products"].append({
-                "name": row[0],
-                "units": row[1],
-                "revenue": float(row[2])
-            })
-
         return results, 200

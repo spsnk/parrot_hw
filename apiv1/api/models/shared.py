@@ -1,6 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
-
 from api.common.util import convert_decimal
+from flask_sqlalchemy import SQLAlchemy
 
 db: SQLAlchemy = SQLAlchemy()
 

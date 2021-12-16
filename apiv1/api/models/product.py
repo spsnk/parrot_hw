@@ -1,9 +1,8 @@
-import decimal
 from uuid import uuid4
 
 from api.models.shared import ModelToDict, db
 from sqlalchemy import Column, func
-from sqlalchemy.types import Numeric, String
+from sqlalchemy.types import String
 
 
 class Products(db.Model, ModelToDict):

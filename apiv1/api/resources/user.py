@@ -1,16 +1,17 @@
 import decimal
+import logging
+
 from api.common.auth import auth_required, generate_token
 from api.models import (OrderContentsModel, OrdersModel, ProductsModel,
                         UsersModel)
 from api.models.shared import db
 from api.schemas import ProductsOrdersSchema, UserSchema
 from api.schemas.product import ProductSchema, ProductsOrdersSchema
-from flask import abort, jsonify, request
+from flask import abort, request
 from flask_restful import Resource
 from marshmallow import Schema, fields
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
-import logging
 
 logger = logging.getLogger("user-resource")
 

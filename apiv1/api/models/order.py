@@ -1,17 +1,12 @@
-import datetime
+
 import decimal
 from uuid import uuid4
 
-from flask_sqlalchemy.model import Model
-from sqlalchemy.orm import column_property
-
-
+from api.models.product import Products
 from api.models.shared import ModelToDict, db
 from api.models.user import Users
-from api.models.product import Products
-from sqlalchemy import Column, ForeignKey, MetaData, Table, func, join
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.types import DateTime, Numeric, String, Integer
+from sqlalchemy import Column, ForeignKey, func
+from sqlalchemy.types import DateTime, Integer, Numeric, String
 
 
 class Orders(db.Model, ModelToDict):
@@ -43,9 +38,3 @@ class OrderContents(db.Model, ModelToDict):
 
     def __repr__(self):
         return f'Order <{self.order_id}> {Products.query.get(self.product_id).name} (${self.unitary_price.__float__()}) x {self.quantity}'
-
-# class Reports(declarative_base(), ModelToDict):
-#     __table__ = join(OrderContents, Orders, Products)
-
-#     id = Products.id
-#     date = Orders.date_created

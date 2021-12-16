@@ -1,5 +1,4 @@
 from api.models.shared import ModelToDict, db
-
 from sqlalchemy import Column
 from sqlalchemy.types import String
 
