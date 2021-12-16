@@ -1,23 +1,25 @@
+## Endpoints
 
-POST    /users
-GET     /users/{id}/credentials
-POST    /users/{id}/orders
-GET     /products/sales
+- POST /users
+- GET /users/{id}/credentials
+- POST /users/{id}/orders
+- GET /products/sales
 
-Tables:
-users
-    email -> PK
-    name
-order
-    id -> PK
-    user_email -> FK
-    total
-    date_created
-ordercontents
-    order_id -> PK FK
-    product_id -> PK FK
-    quantity
-    unitary_price
-products
-    id -> PK
-    name
+## Tables
+
+- users
+  - email (str) -> PK
+  - name (str)
+- order
+  - id (str:uuid) -> PK
+  - user_email (str) -> FK users.email
+  - total (numeric(10,2))
+  - date_created(timestamp with time zone)
+- products
+  - id (str:uuid) -> PK
+  - name (str)
+- ordercontents
+  - order_id (str:uuid) -> PK FK order.id
+  - product_id (str:uuid) -> PK FK product.id
+  - quantity (integer)
+  - unitary_price (numeric(10,2))
