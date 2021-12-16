@@ -114,18 +114,18 @@ class UserOrders(Resource):
             # Create or get product from db
             for product in data["products"]:
                 # Formatting data before processing
-                product["name"] = product["name"].strip().lower()
+                product["name"] = product["name"].strip()
                 product["unitary_price"] = float(product["unitary_price"])
                 product["quantity"] = int(product["quantity"])
 
                 # Searching if product exists in database
                 db_product: ProductsModel = db.session.query(ProductsModel).filter(
-                    ProductsModel.name == product["name"]).first()
+                    func.lower(ProductsModel.name) == func.lower(product["name"])).first()
 
                 # If product doesnt exist, create it.
                 if db_product is None:
                     new_product = {
-                        "name": product.get("name")
+                        "name": product.get("name").lower()
                     }
                     errors = ProductSchema().validate(new_product)
                     if errors:

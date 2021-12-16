@@ -1,4 +1,3 @@
 FROM postgres:latest
 
 COPY 00-structure.sql /docker-entrypoint-initdb.d/00-structure.sql
-COPY data/* /docker-entrypoint-initdb.d/

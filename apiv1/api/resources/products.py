@@ -64,7 +64,7 @@ class ProductsSales(Resource):
         ).join(ProductsModel)
             .join(OrdersModel)
             .group_by(ProductsModel.name)
-            .order_by(ProductsModel.name, desc("revenue"))
+            .order_by(desc("units"))
         )
         if filters.get("start") and filters.get("end"):
             query = query.filter(

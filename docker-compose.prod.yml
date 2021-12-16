@@ -3,32 +3,28 @@ services:
   apiv1:
     build:
       context: ./apiv1
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     env_file:
       - .prod.env
     command: [ "gunicorn", "--bind", "0.0.0.0:5000", "manage:app" ]
     depends_on:
       - db
-    volumes:
-      - "./apiv1/.:/app"
     expose:
       - 5000
 
   web:
     build:
       context: ./web
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     ports:
       - "80:80"
     depends_on:
       - apiv1
-    volumes:
-      - "./web/html/.:/www"
 
   db:
     build:
       context: ./db
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     env_file:
       - .prod.env
     expose:

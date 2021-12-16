@@ -1,0 +1,188 @@
+{
+	"info": {
+		"_postman_id": "be943639-2978-4d1e-ba38-487dd75a5421",
+		"name": "Parrot",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"salvador.paz.santos@gmail.com\",\r\n    \"name\": \"Salvador Paz Santos\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost/api/v1/users",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user credentials",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.response.json())\r",
+							"const token = pm.response.json().token;\r",
+							"pm.environment.set(\"auth_token\", token)\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost/api/v1/users/salvador.paz.santos@gmail.com/credentials",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"salvador.paz.santos@gmail.com",
+						"credentials"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create new Order",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"products\":[\r\n        {\r\n            \"name\": \"Donut\",\r\n            \"quantity\": 5,\r\n            \"unitary_price\": 2.50\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost/api/v1/users/salvador.paz.santos@gmail.com/orders",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"salvador.paz.santos@gmail.com",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all reports",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost/api/v1/products/sales",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"sales"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Reports from date to today",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost/api/v1/products/sales?start=2021-12-01",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"sales"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "2021-12-01"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Reports between dates",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost/api/v1/products/sales?start=2021-12-01&end=2021-12-10",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"sales"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "2021-12-01"
+						},
+						{
+							"key": "end",
+							"value": "2021-12-10"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
