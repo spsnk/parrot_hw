@@ -3,6 +3,7 @@
 ## Endpoints
 
 - POST /users
+- GET /users/{id}
 - GET /users/{id}/credentials
 - POST /users/{id}/orders
 - GET /products/sales

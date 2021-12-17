@@ -13,6 +13,6 @@ RUN python -m pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 COPY ./wait-for-db.sh /app/wait-for-db.sh
-ADD ./ /app/
+COPY ./ /app/
 
 ENTRYPOINT [ "/app/wait-for-db.sh" ]

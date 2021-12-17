@@ -6,14 +6,16 @@ By Salvador Paz
 
 - Create User
   - POST /api/v1/users
+- Get User information (Requires authentication)
+  - GET /api/va/users/{user_email}
 - Get user token (JWT authentication, token expires after 10 minutes by default, can be changed on env file)
   - GET /api/v1/users/{user_email}/credentials
-- Create Order
+- Create Order (Requires authentication)
   - POST /api/v1/users/{user_email}/orders
 - Reports
   - GET /api/v1/products/sales?start={ISO date}&end={ISO date}
 
-For more information check the [documentation](/docs).
+For more information check the [documentation](/docs). There's also interactive API documentation using Swagger UI on the resulting deployment, on the root address.
 
 ## Project Structure
 
@@ -27,6 +29,7 @@ This project is divided in 3 containers:
   - Has persistent volume for data.
 - Reverse Proxy Container - Nginx (web)
   - Contains configuration that host a particular api version on its own route (/api/v1/, etc).
+  - Hosts interactive API documentation on root route (e.g. <http://localhost> ).
 
 ## Development Environment
 
@@ -64,7 +67,7 @@ apiv1_1  |    WARNING: This is a development server. Do not use it in a producti
 apiv1_1  |  * Running on http://192.168.128.3:5000/ (Press CTRL+C to quit)
 ```
 
-When above message is shown application is ready for local development, any changes on `apiv1` and `web/html` folders will be automatically reloaded, open up your favorite editor and load up the project directory to make changes.
+When above message is shown application is ready for local development, any changes on `apiv1` folder will be automatically reloaded, open up your favorite editor and load up the project directory to make changes.
 
 ### Remove Development Environment
 

@@ -1,0 +1,275 @@
+openapi: 3.0.1
+info:
+  title: Parrot Challenge
+  description: "Simple API"
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: GNU AFFERO GPL
+    url: https://www.gnu.org/licenses/agpl-3.0.en.html
+  version: 1.0.0
+servers:
+  - url: /api/v1
+tags:
+  - name: users
+  - name: orders
+  - name: products
+
+paths:
+  /users:
+    post:
+      tags:
+        - users
+      summary: Creates a new user
+      description: Creates a new user and adds it to the database
+      operationId: create-user
+      requestBody:
+        description: User object to be added to the PoS, email is its unique id.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        required: true
+      responses:
+        "201":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/{email}:
+    get:
+      tags:
+        - users
+      summary: Get user info
+      description: Retrieves user information, requires authentication.
+      operationId: read-user
+      parameters:
+        - name: email
+          in: path
+          description: e-mail of a previously created user.
+          required: true
+          schema:
+            $ref: "#/components/schemas/EmailParam"
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []
+
+  /users/{email}/credentials:
+    get:
+      tags:
+        - users
+      summary: Get user credentials
+      description: Get User specific token for authenticated endpoints.
+      operationId: read-user-credentials
+      parameters:
+        - name: email
+          in: path
+          description: e-mail of a previously created user.
+          required: true
+          schema:
+            $ref: "#/components/schemas/EmailParam"
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/{email}/orders:
+    post:
+      tags:
+        - orders
+      summary: Create new order
+      description: Creates a new order with a list of products, pertaining to an user account, requires authentication
+      operationId: create-user-order
+      parameters:
+        - name: email
+          in: path
+          description: e-mail of a previously created user.
+          required: true
+          schema:
+            $ref: "#/components/schemas/EmailParam"
+      requestBody:
+        description: Order object
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []
+
+  /products/sales:
+    get:
+      tags:
+        - products
+      summary: Get report of product sales
+      description: Gets a report of product sales detailing units and revenue generated, can be filtered by start date of the report or between dates.
+      operationId: read-product-sales
+      parameters:
+        - name: start
+          in: query
+          description: Start filter (inclusive), supports date and date-time formats.
+          schema:
+            $ref: "#/components/schemas/Date"
+        - name: end
+          in: query
+          description: End filter (exclusive), supports date and date-time formats.
+          schema:
+            $ref: "#/components/schemas/Date"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesResponse"
+
+components:
+  schemas:
+    Date:
+      type: string
+      format: date-time
+    EmailParam:
+      type: string
+      pattern: '[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,64}'
+      example: "salvador.paz.santos@gmail.com"
+    User:
+      required:
+        - email
+        - name
+      type: object
+      properties:
+        email:
+          type: string
+          pattern: '[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,64}'
+          example: "salvador.paz.santos@gmail.com"
+        name:
+          type: string
+          example: "Salvador Paz Santos"
+      xml:
+        name: User
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+        quantity:
+          type: integer
+        unitary_price:
+          type: number
+    Order:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+    OrderResponse:
+      allOf:
+        - $ref: "#/components/schemas/Order"
+        - type: object
+          properties:
+            user_email:
+              $ref: "#/components/schemas/EmailParam"
+            order_id:
+              type: string
+            total:
+              type: number
+    SalesResponse:
+      type: object
+      properties:
+        range:
+          type: object
+          oneOf:
+            - type: string
+            - type: object
+              properties:
+                start:
+                  type: string
+                  format: date-time
+                end:
+                  type: string
+                  format: date-time
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              units:
+                type: integer
+              revenue:
+                type: number
+    Error:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            errors:
+              type: object
+              additionalProperties:
+                oneOf:
+                  - type: array
+                  - type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
