@@ -69,6 +69,8 @@ apiv1_1  |  * Running on http://192.168.128.3:5000/ (Press CTRL+C to quit)
 
 When above message is shown application is ready for local development, any changes on `apiv1` folder will be automatically reloaded, open up your favorite editor and load up the project directory to make changes.
 
+### **--- Database is seeded for development environment ---**
+
 ### Remove Development Environment
 
 Execute command:
@@ -95,6 +97,8 @@ docker-compose -f docker-compose.prod.yml up --build
 Similarly to development environment, wait for containers to build and initialize.
 
 Production server will copy all the application files at container creation, meaning it wont reload any change of the files when they're modified.
+
+### **--- Only database structure is loaded for production environment (empty database) ---**
 
 ### Remove Production Environment
 
