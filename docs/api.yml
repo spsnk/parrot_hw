@@ -208,10 +208,13 @@ components:
       properties:
         name:
           type: string
+          example: donut
         quantity:
           type: integer
+          example: 1
         unitary_price:
           type: number
+          example: 5.50
     Order:
       type: object
       properties:
@@ -219,6 +222,16 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Product"
+          example:
+            - name: donut
+              quantity: 1
+              unitary_price: 5.50
+            - name: coke
+              quantity: 3
+              unitary_price: 14.99
+            - name: instant noodles cup
+              quantity: 5
+              unitary_price: 4.99
     OrderResponse:
       allOf:
         - $ref: "#/components/schemas/Order"
